@@ -51,10 +51,10 @@ function build_matrices(L, s, s_input, s_output)
     s = vcat(s_input, s, s_output)
 
     # building L-1 Theta matrices
-    TT = []
+    TT = Vector{Any}(undef, L-1)
     for t = 1:(L-1)
         dims = [s[t+1], s[t]+1] # row, col
-        push!(TT, rand(Float32, dims[1], dims[2])) # originally was Float 64
+        TT[t] = rand(Float32, dims[1], dims[2])
     end
     return TT
 end

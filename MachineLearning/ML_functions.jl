@@ -213,7 +213,7 @@ function apply_gradient(X, tt, D_list, α=Float16(0.01), λ=Float16(0))
         zrs = zeros(size(tt_r)[1], 1)
         regM = hcat(zrs, (λ/m)*tt_r)
 
-        push!(grads, (grad_noReg + regM) ) # originally was: grads = push!(grads, (grad_noReg + regM) ) ## I think this is redundant with 'grads='
+        push!(grads, (grad_noReg + regM) ) 
     end
 
     # Apply gradients

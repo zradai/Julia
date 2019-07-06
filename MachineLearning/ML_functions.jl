@@ -44,7 +44,6 @@ end
 #---------------------------------------------------------
 
 function build_matrices(L, s, s_input, s_output)
-#function build_matrices(L, s, s_input, s_output)
     if length(s) == 1 && L>3
         s = repeat([s], (L-2))
     end

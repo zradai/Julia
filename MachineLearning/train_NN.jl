@@ -14,7 +14,7 @@ function train_NN(X, y;
     verbose=true ) # additional argument: activation function
 
     #include("/media/zozoo/3191D18644760ED0/Tan/MachineLearning/julia_ML/julia_ML_nested_functions.jl")
-    include("julia_ML_nested_functions.jl")
+    include("ML_functions.jl")
 
     #n, m = UInt8(size(X)[2]), UInt16(size(X)[1])
     tt = build_matrices(L, s, n, s_output)

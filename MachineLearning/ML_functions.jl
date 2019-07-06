@@ -90,10 +90,11 @@ end
 #---------------------------------------------------------
 
 function Theta_no_bias(tt)
-    tt_noBias = []
+    tt_noBias = tt
     for t = 1:length(tt)
-        tt_t = convert(Array{Float32,2}, hcat(zeros( size(tt[t])[1] ), tt[t][:,2:end]) )
-        push!(tt_noBias, tt_t)
+        for u = 1:size(tt_noBias[t])[1]
+            tt_noBias[t][u,1] = 0
+        end
     end
     return tt_noBias
 end

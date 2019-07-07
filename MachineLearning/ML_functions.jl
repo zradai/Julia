@@ -44,6 +44,7 @@ end
 #---------------------------------------------------------
 
 function build_matrices(L, s, s_input, s_output)
+
     if length(s) == 1 && L>3
         s = repeat([s], (L-2))
     end
@@ -127,7 +128,6 @@ function cost_function(X, y, tt, λ=0)
 end
 
 
-
 #---------------------------------------------------------
 
 function backprop(X, y, tt)
@@ -135,17 +135,16 @@ function backprop(X, y, tt)
     L = UInt8(length(tt)+1)
 
     # array for the 'D' error matrices
-    D_list = []
+    D_list = Vector{Any}(undef, L-1)
     for k in 1:length(tt)
-        #push!(D_list, Array{Float64}(undef, size(tt[length(tt)-(k-1)]) ))
-        push!(D_list, convert(Array{Float32, 2}, zeros(size(tt[length(tt)-(k-1)]) ) ) )
+        D_list[k] = Array{Float32, 2}(zeros(size(tt[length(tt)-(k-1)])) )
     end
 
     for i = 1:size(X)[1]
 
         # Forward propagation
-        aL_s = Any[]
-        push!(aL_s, reshape(vcat(1, X[i,:]), 1, size(X)[2]+1 ) )
+        aL_s = Vector{Any}(undef, L)
+        aL_s[1] = reshape(vcat(1, X[i,:]), 1, size(X)[2]+1 )
         for l = 2:L
 
             n_s = size(tt[l-1])[1]
@@ -157,18 +156,17 @@ function backprop(X, y, tt)
                 M_l[:,s] = sigm_opt(X_s, tt_s, false)
             end
             if l != L
-                push!(aL_s, hcat(1, M_l))
+                aL_s[l] = hcat(1, M_l)
             else
-                push!(aL_s, M_l)
+                aL_s[l] = M_l
             end
         end
 
         # Backpropagation
-        d_list = []
-        push!(d_list, aL_s[L][1] - y[i])
+        d_list = Vector{Any}(undef, L-1)
+        d_list[1] = aL_s[L][1] - y[i]
         for d = 2:(L-1)
             ai = L-(d-1)
-
 
             if size(d_list[d-1])==()
                 d_d = ( (tt[ai][:,2:end] * d_list[d-1]') .* (aL_s[ai][:,2:end].*(1 .- aL_s[ai][:,2:end]) ) )
@@ -176,7 +174,7 @@ function backprop(X, y, tt)
                 d_d = ( (tt[ai][:,2:end] * d_list[d-1]')' .* (aL_s[ai][:,2:end].*(1 .- aL_s[ai][:,2:end]) ) )
             end
 
-            push!(d_list, d_d)
+            d_list[d] = d_d
 
         end
         temporary_dlist_1 = Array{Float64}(undef, 1, length(d_list[1]))
@@ -203,7 +201,7 @@ function apply_gradient(X, tt, D_list, α=Float16(0.01), λ=Float16(0))
     L = UInt8(length(tt)+1)
 
     # Gradients
-    grads = []
+    grads = Vector{Any}(undef, L-1)
     for r = 1:length(D_list)
         D_r = D_list[r]
         ai = L-r
@@ -213,7 +211,7 @@ function apply_gradient(X, tt, D_list, α=Float16(0.01), λ=Float16(0))
         zrs = zeros(size(tt_r)[1], 1)
         regM = hcat(zrs, (λ/m)*tt_r)
 
-        push!(grads, (grad_noReg + regM) ) 
+        grads[r] = grad_noReg + regM
     end
 
     # Apply gradients

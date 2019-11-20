@@ -32,7 +32,7 @@ function simB(mortalities, p, N, Y)
 
     s = rbinom(1, 1, p)[1]
 
-    if s==1 # good year
+    if s==1 # good year 
       for n in 1:N
 
         dn = fecvar[1,n]
